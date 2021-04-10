@@ -1,18 +1,34 @@
-import React from 'react'
+import React, { useState } from "react";
 
-const Appointmentsdayview = ({appointments}) => {
+import Appointment from "./Appointment";
 
-    return (
-        <div data-test="appointmentsDayView">
-            <ol>
-            {
-                appointments && appointments.length > 0 && appointments.map( appointment => (
-                    <li key={appointment.startsAt}>{appointment.startsAt}</li>
-                ))
-            }
-            </ol>
-        </div>
-    );
+const Appointmentsdayview = ({ appointments }) => {
+  const [selectedAppointment, setSelectedAppointment] = useState(0);
+
+  const appointmentTimeOfDay = (startsAt) => {
+    const [h, m] = new Date(startsAt).toTimeString().split(":");
+    return `${h}:${m}`;
+  };
+
+  return (
+    <div data-test="appointmentsDayView">
+      <ol>
+        {appointments &&
+          appointments.map((appointment, index) => (
+            <li key={appointment.startsAt}>
+              <button type="button" onClick={ () => setSelectedAppointment(index)}>
+                {appointmentTimeOfDay(appointment.startsAt)}
+              </button>
+            </li>
+          ))}
+      </ol>
+      {appointments.length === 0 ? (
+        <p>There are no appointments scheduled for today.</p>
+      ) : (
+        <Appointment {...appointments[selectedAppointment]} />
+      )}
+    </div>
+  );
 };
 
 export default Appointmentsdayview;
